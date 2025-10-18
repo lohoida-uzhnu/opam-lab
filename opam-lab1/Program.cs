@@ -50,6 +50,11 @@ class Program
         Console.WriteLine($"Ваша знижка: {discount}% що становить {discountAmount:F2} грн."); 
         Console.WriteLine($"До сплати після знижки: {finalPrice:F2} грн.");
         Console.WriteLine($"Фінальна ціна в квадраті: {finalPricePow:F2} грн.");
+        Console.ResetColor();
+        Console.ForegroundColor = ConsoleColor.Yellow;
+        Console.WriteLine("\nДякуємо, що обрали Медичний центр Сім'я! Бажаємо Вам міцного здоров'я!");
 
+        // creat by kudaihashish
+        // github.com/lohoida-uzhnu
     }
 }
