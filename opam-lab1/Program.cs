@@ -38,7 +38,18 @@ class Program
 
         double totalPrice = totalOphthalmologist + totalUrologist + totalNeurologist + totalNarcologist;
 
+        Random random = new Random();
+        double discount = Math.Round(random.NextDouble() * 15, 2);
+        double discountAmount = totalPrice * (discount / 100);
+        double finalPrice = totalPrice - discountAmount;
 
+        double finalPricePow = Math.Pow(finalPrice, 2);
+
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.WriteLine($"\n=== Загальна вартість прийомів ===: {totalPrice:F2} грн.");
+        Console.WriteLine($"Ваша знижка: {discount}% що становить {discountAmount:F2} грн."); 
+        Console.WriteLine($"До сплати після знижки: {finalPrice:F2} грн.");
+        Console.WriteLine($"Фінальна ціна в квадраті: {finalPricePow:F2} грн.");
 
     }
 }
