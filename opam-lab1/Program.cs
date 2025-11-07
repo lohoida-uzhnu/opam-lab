@@ -66,7 +66,7 @@ class Program
                 ShowBestSpecialist();
                 break;
             case 5:
-                Console.WriteLine("Функція в розробці... Повертаємо в головне меню.");
+                ShowSearchMenu();
                 break;
                 case 6:
                 Console.WriteLine("Вихід з програми. До побачення!");
@@ -125,6 +125,8 @@ class Program
         Console.ResetColor();
         Console.ForegroundColor = ConsoleColor.Yellow;
         Console.WriteLine("\nДякуємо, що обрали Медичний центр Сім'я! Бажаємо Вам міцного здоров'я!");
+   
+        ShowMainMenu();
     }
 
    private static void ShowServiceMenu()
@@ -167,6 +169,14 @@ class Program
         ShowMainMenu();
         return;
     }
+
+    private static void ShowSearchMenu()
+    {
+        Console.WriteLine("Функція в розробці... Повертаємо в головне меню.");
+        ShowMainMenu();
+        return;
+    }
+
     // creat by kudaihashish
     // github.com/lohoida-uzhnu
 }
