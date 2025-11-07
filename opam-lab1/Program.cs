@@ -24,7 +24,7 @@ class Program
     {
         Console.ForegroundColor = ConsoleColor.DarkGreen;
         Console.Write(prompt + " ");
-        
+            
         bool isNumber = double.TryParse(Console.ReadLine(), out double choice);
         if (!isNumber)
         {
@@ -125,7 +125,7 @@ class Program
         Console.ResetColor();
         Console.ForegroundColor = ConsoleColor.Yellow;
         Console.WriteLine("\nДякуємо, що обрали Медичний центр Сім'я! Бажаємо Вам міцного здоров'я!");
-   
+        Console.ResetColor();
         ShowMainMenu();
     }
 
@@ -143,13 +143,12 @@ class Program
 
         double choice = GetUserInput("Оберіть дію (1-7): ");
 
-        if (choice >= 0 && choice < 6)
+        if (choice >= 0 && choice < 7)
         {
-            Console.WriteLine("Функція в розробці... Повертаємо у головне меню");
-            ShowMainMenu();
-            return;
+            Console.WriteLine("Функція в розробці... Повертаємо у меню послуг.");
+            ShowServiceMenu();
         }
-        else if (choice == 7)
+        else
         {
             ShowMainMenu();
             return;
