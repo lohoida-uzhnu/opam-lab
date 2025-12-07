@@ -17,14 +17,26 @@ namespace opam_lab1
             Quantity = quantity;
         }
     }
-    
+
     class Program
     {
+        public static void PressAnyKey()
+        {
+            Console.WriteLine("Натисніть будь-яку клавішу щоб продовжити...");
+            Console.ReadKey();
+        }
+
         public static string login = "aaa";
         public static string password = "11111";
 
-        static service[] services = new service[5];
-        static bool servicesAdded = false;
+        static List<service> services = new List<service>();
+
+        static void Main(string[] args)
+        {
+            AuthenticateUser();
+            RenderIntro();
+            ShowMainMenu();
+        }
 
         public static void AuthenticateUser()
         {
@@ -56,13 +68,6 @@ namespace opam_lab1
 
             Console.WriteLine("Спроби вичерпано. Програма завершена.");
             Environment.Exit(0);
-        }
-
-        public static void Main(string[] args)
-        {
-            AuthenticateUser();
-            RenderIntro();
-            ShowMainMenu();
         }
 
         public static void RenderIntro()
@@ -109,7 +114,7 @@ namespace opam_lab1
                 }
 
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Ви ввели не чяисло або воно не ціле. Спробуйте ще раз.");
+                Console.WriteLine("Ви ввели не число або воно не ціле. Спробуйте ще раз.");
             }
         }
 
@@ -124,7 +129,7 @@ namespace opam_lab1
                 Console.WriteLine("4. Статистика");
                 Console.WriteLine("5. Вихід");
 
-                int choice = GetUserInputInt("Оберіть пункт меню (1-5): ");
+                int choice = GetUserInputInt("Оберіть пункт (1-5): ");
 
                 switch (choice)
                 {
@@ -155,9 +160,13 @@ namespace opam_lab1
             while (true)
             {
                 Console.WriteLine("\n===== Меню послуг =====");
-                Console.WriteLine("1. Додати 5 послуг");
+                Console.WriteLine("1. Додати послуги");
                 Console.WriteLine("2. Показати всі послуги");
-                Console.WriteLine("3. Назад");
+                Console.WriteLine("3. Пошук");
+                Console.WriteLine("4. Видалення");
+                Console.WriteLine("5. Сортування");
+                Console.WriteLine("6. Статистика");
+                Console.WriteLine("7. Назад");
 
                 int choice = GetUserInputInt("Виберіть пункт:");
 
@@ -165,28 +174,39 @@ namespace opam_lab1
                 {
                     case 1:
                         AddServices();
-                        continue;
+                        break;
                     case 2:
                         ShowServices();
-                        continue;
+                        break;
                     case 3:
-                        Console.WriteLine("Повернення в головне меню.");
+                        SearchMenu();
+                        break;
+                    case 4:
+                        DeleteService();
+                        break;
+                    case 5:
+                        SortMenu();
+                        break;
+                    case 6:
+                        Statistic();
+                        break;
+                    case 7:
                         return;
                     default:
                         Console.WriteLine("Невірний вибір.");
-                        continue;
+                        break;
                 }
             }
         }
 
         private static void AddServices()
         {
-            Console.WriteLine("\nВведення 5 послуг:");
+            Console.WriteLine("\nВведення послуг (мінімум 5):");
+            int count = GetUserInputInt("Скільки послуг хочете додати?: ");
 
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < count; i++)
             {
                 Console.WriteLine($"\nПослуга №{i + 1}");
-
                 Console.Write("Назва: ");
                 string name = Console.ReadLine();
 
@@ -194,44 +214,163 @@ namespace opam_lab1
                 double duration = GetUserInput("Тривалість (хв): ");
                 int quantity = GetUserInputInt("Кількість доступних: ");
 
-                services[i] = new service(name, price, duration, quantity);
+                services.Add(new service(name, price, duration, quantity));
             }
-
-            servicesAdded = true;
 
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("\nПослуги успішно додано!");
-            Console.WriteLine("Натисніть будь-яку клавішу щоб вийти в меню послуг.");
-            Console.ReadKey();
             Console.ResetColor();
+            PressAnyKey();
         }
 
         private static void ShowServices()
         {
-            Console.ForegroundColor = ConsoleColor.DarkCyan;
-            Console.WriteLine("\n=== СПИСОК ПОСЛУГ ===");
-
-            if (!servicesAdded)
+            if (services.Count == 0)
             {
-                Console.WriteLine("Послуги ще не додані!");
+                Console.WriteLine("Послуг ще немає!");
+                PressAnyKey();
                 return;
             }
 
-            Console.WriteLine("\n--- Список послуг ---");
-            for (int i = 0; i < 5; i++)
+            Console.WriteLine("\n-----------------------------------------------");
+            Console.WriteLine($"| {"№",-3} | {"Назва",-20} | {"Ціна",-10} | {"Хв",-5} | {"К-сть",-5} |");
+            Console.WriteLine("-----------------------------------------------");
+
+            for (int i = 0; i < services.Count; i++)
             {
                 var s = services[i];
-                Console.WriteLine($"{i + 1}. {s.Name}, {s.Price} грн, {s.Duration} хв, {s.Quantity} шт.");
+                Console.WriteLine($"| {i,-3} | {s.Name,-20} | {s.Price,-10} | {s.Duration,-5} | {s.Quantity,-5} |");
             }
-            
+
+            Console.WriteLine("-----------------------------------------------");
+            PressAnyKey();
+        }
+
+        private static void SearchMenu()
+        {
+            Console.Write("\nЩо ви хочете знайти: ");
+            string query = Console.ReadLine().ToLower();
+
+            for (int i = 0; i < services.Count; i++)
+            {
+                if (services[i].Name.ToLower().Contains(query))
+                {
+                    var s = services[i];
+                    Console.WriteLine($"\nЗнайдено: {s.Name}, {s.Price} грн, {s.Duration} хв, {s.Quantity} шт");
+                    PressAnyKey();
+                    return;
+                }
+            }
+
+            Console.WriteLine("Нічого не знайдено");
+            PressAnyKey();
+        }
+
+        public static void DeleteService()
+        {
+            if (services.Count == 0)
+            {
+                Console.WriteLine("Немає що видаляти!");
+                PressAnyKey();
+                return;
+            }
+
+            ShowServices();
+
+            int index = GetUserInputInt("Введіть індекс для видалення: ");
+
+            if (index < 0 || index >= services.Count)
+            {
+                Console.WriteLine("Такого індекса не існує!");
+                PressAnyKey();
+                return;
+            }
+
+            services.RemoveAt(index);
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Послугу видалено!");
             Console.ResetColor();
-            Console.WriteLine("Натисніть будь-яку клавішу щоб вийти в меню послуг.");
-            Console.ReadKey();
+            PressAnyKey();
+        }
+
+        private static void SortMenu()
+        {
+            Console.WriteLine("\n1 — Сортувати за ціною");
+            Console.WriteLine("2 — Сортувати за назвою");
+            Console.WriteLine("3 — Бульбашкове сортування (ціна)");
+            Console.WriteLine("4 — Назад");
+
+            int choice = GetUserInputInt("Оберіть пункт:");
+
+            switch (choice)
+            {
+                case 1:
+                    services.Sort((a, b) => a.Price.CompareTo(b.Price));
+                    break;
+                case 2:
+                    services.Sort((a, b) => a.Name.CompareTo(b.Name));
+                    break;
+                case 3:
+                    BubbleSort();
+                    break;
+                case 4:
+                    return;
+            }
+
+            Console.WriteLine("Сортування завершено!");
+            PressAnyKey();
+        }
+
+        private static void BubbleSort()
+        {
+            for (int i = 0; i < services.Count - 1; i++)
+            {
+                for (int j = 0; j < services.Count - i - 1; j++)
+                {
+                    if (services[j].Price > services[j + 1].Price)
+                    {
+                        var temp = services[j];
+                        services[j] = services[j + 1];
+                        services[j + 1] = temp;
+                    }
+                }
+            }
+        }
+
+        private static void Statistic()
+        {
+            if (services.Count == 0)
+            {
+                Console.WriteLine("Немає даних!");
+                PressAnyKey();
+                return;
+            }
+
+            double min = services[0].Price;
+            double max = services[0].Price;
+            double sum = 0;
+
+            foreach (var s in services)
+            {
+                sum += s.Price;
+                if (s.Price < min) min = s.Price;
+                if (s.Price > max) max = s.Price;
+            }
+
+            double avg = sum / services.Count;
+
+            Console.WriteLine($"\nКількість: {services.Count}");
+            Console.WriteLine($"Сума цін: {sum}");
+            Console.WriteLine($"Середня ціна: {avg}");
+            Console.WriteLine($"Мінімальна: {min}");
+            Console.WriteLine($"Максимальна: {max}");
+
+            PressAnyKey();
         }
 
         private static void ShowAppointmentMenu()
-        { 
-            if (!servicesAdded)
+        {
+            if (services.Count == 0)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("Спершу додайте послуги в меню послуг!");
@@ -245,17 +384,17 @@ namespace opam_lab1
 
             double total = 0;
 
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < services.Count; i++)
             {
                 var s = services[i];
-                Console.WriteLine($"\n[{i + 1}] {s.Name} — {s.Price} грн / {s.Duration} хв / {s.Quantity} доступно");
+                Console.WriteLine($"\n[{i}] {s.Name} — {s.Price} грн / {s.Duration} хв / {s.Quantity} доступно");
 
                 int count = GetUserInputInt("Скільки хочете записів: ");
 
                 if (count > s.Quantity)
                 {
                     Console.ForegroundColor = ConsoleColor.DarkRed;
-                    Console.WriteLine("❗ Недостатньо місць, записуємо максимум можливе.");
+                    Console.WriteLine("Недостатньо місць, записуємо максимум можливе.");
                     count = s.Quantity;
                     Console.ResetColor();
                 }
@@ -272,9 +411,9 @@ namespace opam_lab1
             Console.WriteLine($"\nЗагальна сума: {total} грн");
             Console.WriteLine($"Знижка: {discount}% ({discountAmount} грн)");
             Console.WriteLine($"До оплати: {finalPrice} грн");
-            Console.WriteLine("Дякуємо, що вибрали нас!(натисніть будь-яку клавішу щоб вийти в головне меню)");
+            Console.WriteLine("Дякуємо, що вибрали нас!");
             Console.ResetColor();
-            Console.ReadKey();
+            PressAnyKey();
         }
 
         private static void ShowSpecialistMenu()
@@ -293,17 +432,11 @@ namespace opam_lab1
                 switch (choice)
                 {
                     case 1:
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("\nФункція ще в розробці");
-                        break;
-
                     case 2:
                         Console.WriteLine("\nФункція ще в розробці");
                         break;
-
                     case 3:
-                        return; 
-
+                        return;
                     default:
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine("Невірний вибір, спробуйте ще раз.");
@@ -312,57 +445,5 @@ namespace opam_lab1
                 Console.ResetColor();
             }
         }
-
-        private static void Statistic()
-        {
-            Console.ForegroundColor = ConsoleColor.DarkCyan;
-            Console.WriteLine("\n=== СТАТИСТИКА ПОСЛУГ ===");
-
-            if (!servicesAdded)
-            {
-                Console.ForegroundColor  = ConsoleColor.Red;
-                Console.WriteLine("\nПослуги ще не додані. Немає даних для статистики.");
-                Console.ResetColor();
-                Console.WriteLine("\nНатисніть будь-яку клавішу щоб вийти в головне меню.");
-                Console.ReadKey();
-                return;
-            }
-
-            double totalPrice = 0;
-            int totalQuantity = 0;
-
-            double minPrice = services[0].Price;
-            double maxPrice = services[0].Price;
-
-            int countPriceOver500 = 0;
-
-            foreach (var s in services)
-            {
-                totalPrice += s.Price;
-                totalQuantity += s.Quantity;
-
-                if (s.Price < minPrice) minPrice = s.Price;
-                if (s.Price > maxPrice) maxPrice = s.Price;
-
-                if (s.Price > 500) countPriceOver500++;
-            }
-
-            double averagePrice = totalPrice / services.Length;
-            double averageQuantity = totalQuantity / services.Length;
-
-            Console.ForegroundColor = ConsoleColor.DarkCyan;
-            Console.WriteLine("\n=== СТАТИСТИКА ===");
-            Console.WriteLine($"Загальна сума цін: {totalPrice} грн");
-            Console.WriteLine($"Середня ціна: {averagePrice} грн");
-            Console.WriteLine($"Середня кількість: {averageQuantity}");
-            Console.WriteLine($"Кількість послуг з ціною > 500 грн: {countPriceOver500}");
-            Console.WriteLine($"Мінімальна ціна: {minPrice} грн");
-            Console.WriteLine($"Максимальна ціна: {maxPrice} грн");
-
-            Console.ResetColor();
-            Console.WriteLine("\nНатисніть будь-яку клавішу щоб вийти в головне меню.");
-            Console.ReadKey();
-        }
-
     }
 }
