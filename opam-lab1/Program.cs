@@ -306,12 +306,15 @@ namespace opam_lab1
             {
                 case 1:
                     services.Sort((a, b) => a.Price.CompareTo(b.Price));
+                    ShowServices();
                     break;
                 case 2:
                     services.Sort((a, b) => a.Name.CompareTo(b.Name));
+                    ShowServices();
                     break;
                 case 3:
                     BubbleSort();
+                    ShowServices();
                     break;
                 case 4:
                     return;
@@ -341,30 +344,44 @@ namespace opam_lab1
         {
             if (services.Count == 0)
             {
-                Console.WriteLine("Немає даних!");
+                Console.WriteLine("Послуги ще не додані!");
                 PressAnyKey();
                 return;
             }
 
-            double min = services[0].Price;
-            double max = services[0].Price;
-            double sum = 0;
+            double totalPrice = 0;
+            int totalQuantity = 0;
+
+            double minPrice = services[0].Price;
+            double maxPrice = services[0].Price;
+            
+            int countPriceOver500 = 0;
 
             foreach (var s in services)
             {
-                sum += s.Price;
-                if (s.Price < min) min = s.Price;
-                if (s.Price > max) max = s.Price;
+                totalPrice += s.Price;
+                totalQuantity += s.Quantity;
+
+                if (s.Price < minPrice) minPrice = s.Price;
+                if (s.Price > maxPrice) maxPrice = s.Price;
+
+                if(s.Price > 500) countPriceOver500++;
             }
 
-            double avg = sum / services.Count;
+            double averagePrice = totalPrice / services.Count;
+            double averageQuantity = totalQuantity / services.Count;
 
-            Console.WriteLine($"\nКількість: {services.Count}");
-            Console.WriteLine($"Сума цін: {sum}");
-            Console.WriteLine($"Середня ціна: {avg}");
-            Console.WriteLine($"Мінімальна: {min}");
-            Console.WriteLine($"Максимальна: {max}");
-
+            Console.ForegroundColor = ConsoleColor.DarkCyan;
+            Console.WriteLine("\n=== СТАТИСТИКА ===");
+            Console.WriteLine($"Кількість послуг: {services.Count}");
+            Console.WriteLine($"Загальна сума цін: {totalPrice} грн");
+            Console.WriteLine($"Середня ціна: {averagePrice} грн");
+            Console.WriteLine($"Середня кількість: {averageQuantity}");
+            Console.WriteLine($"Кількість послуг з ціною > 500 грн: {countPriceOver500}");
+            Console.WriteLine($"Мінімальна ціна: {minPrice} грн");
+            Console.WriteLine($"Максимальна ціна: {maxPrice} грн");
+            
+            Console.ResetColor();
             PressAnyKey();
         }
 
