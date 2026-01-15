@@ -13,6 +13,7 @@ namespace opam_lab1
         public static string currentDir = Directory.GetCurrentDirectory();
         public static string[] services;
 
+        // Перевіряє наявність файлу; створює новий із заголовком, якщо його немає
         public static void EnsureFileExists(string path, string header)
         {
             if (!File.Exists(path))
@@ -25,6 +26,7 @@ namespace opam_lab1
             }
         }
 
+        // Головна точка входу: ініціалізація, завантаження даних, авторизація та меню
         public static void Main()
         {
             Console.OutputEncoding = Encoding.UTF8;
@@ -32,6 +34,7 @@ namespace opam_lab1
             EnsureFileExists(currentDir + "/services.csv", "Id,Name,Price,Duration,Quantity");
             EnsureFileExists(currentDir + "/users.csv", "Id,Login,Password");
 
+            // Завантаження послуг з файлу
             services = File.ReadAllLines(currentDir + "/services.csv");
 
             if (services.Length == 0 || services[0].Trim() != "Id,Name,Price,Duration,Quantity")
@@ -41,6 +44,7 @@ namespace opam_lab1
                 Console.ResetColor();
             }
 
+            // Розбір рядків CSV у об'єкти Service
             for (int i = 1; i < services.Length; i++)
             {
                 string line = services[i];
@@ -112,6 +116,7 @@ namespace opam_lab1
             Console.ReadKey();
         }
 
+        // Меню вибору: вхід в систему або реєстрація
         public static void AuthenticateUser()
         {
             Console.ForegroundColor = ConsoleColor.Green;
@@ -131,6 +136,7 @@ namespace opam_lab1
             }
         }
 
+        // Авторизація: перевірка логіна та пароля (максимум 3 спроби)
         public static void Login()
         {
             Console.ForegroundColor = ConsoleColor.DarkCyan;
@@ -162,12 +168,15 @@ namespace opam_lab1
             }
         }
 
+        // Реєстрація: створення нового користувача, валідація даних та запис у файл
         public static void Registration()
         {
             string[] lines = File.ReadAllLines(currentDir + "/users.csv");
             Console.ForegroundColor = ConsoleColor.DarkCyan;
             string login;
             string password;
+
+            // Валідація логіна
             while (true)
             {
                 Console.WriteLine("Введіть логін для нового акаунтy:");
@@ -200,6 +209,7 @@ namespace opam_lab1
                 break;
             }
 
+            // Валідація пароля
             while (true)
             {
                 Console.WriteLine("Введіть пароль для нового акаунтy:");
@@ -223,6 +233,7 @@ namespace opam_lab1
             verify = true;
         }
 
+        // Допоміжний метод: безпечне зчитування цілого числа з консолі
         public static int GetUserInputInt(string prompt = "Введіть ціле число: ")
         {
             while (true)
@@ -248,6 +259,7 @@ namespace opam_lab1
             Console.ReadKey();
         }
 
+        // Головне меню програми: навігація по розділах
         public static void MainMenu()
         {
             while (true)
@@ -285,6 +297,7 @@ namespace opam_lab1
             }
         }
 
+        // Підменю для керування послугами (CRUD операції)
         private static void ShowServiceMenu()
         {
             while (true)
@@ -329,6 +342,7 @@ namespace opam_lab1
             }
         }
 
+        // Додає нову послугу: введення даних, перевірки та запис у файл
         public static void AddServices()
         {
             string name;
@@ -386,6 +400,7 @@ namespace opam_lab1
             MainMenu();
         }
 
+        // Виводить таблицю всіх доступних послуг
         private static void ShowServices()
         {
             if (Services.Count == 0)
@@ -409,6 +424,7 @@ namespace opam_lab1
             PressAnyKey();
         }
 
+        // Пошук послуги за назвою (без урахування регістру)
         public static void SearchMenu()
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
@@ -437,6 +453,7 @@ namespace opam_lab1
             return;
         }
 
+        // Видалення послуги зі списку та перезапис файлу CSV
         public static void DeleteService()
         {
             ShowServices();
@@ -468,6 +485,7 @@ namespace opam_lab1
             return;
         }
 
+        // Меню вибору алгоритму сортування
         public static void SortMenu()
         {
             Console.ForegroundColor = ConsoleColor.DarkBlue;
@@ -502,6 +520,7 @@ namespace opam_lab1
             PressAnyKey();
         }
 
+        // Реалізація алгоритму сортування бульбашкою (за ціною)
         public static void BubbleSort()
         {
             int n = Services.Count;
@@ -519,6 +538,7 @@ namespace opam_lab1
             }
         }
 
+        // Обчислює та показує статистику: загальна сума, середні значення, мін/макс
         private static void Statistic()
         {
             if (Services.Count == 0)
@@ -564,6 +584,7 @@ namespace opam_lab1
             PressAnyKey();
         }
 
+        // Меню запису на прийом: вибір послуг, розрахунок вартості та знижки
         private static void ShowAppointmentMenu()
         {
             if (Services.Count == 0)
@@ -612,6 +633,7 @@ namespace opam_lab1
             PressAnyKey();
         }
 
+        // Меню для роботи зі спеціалістами (заглушка)
         private static void ShowSpecialistMenu()
         {
             Console.ForegroundColor = ConsoleColor.DarkCyan;
@@ -643,6 +665,5 @@ namespace opam_lab1
         }
     }
 }
-
 //create by zewws92qar
 // Логойда Станіслав КН-23
