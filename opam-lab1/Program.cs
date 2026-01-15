@@ -397,7 +397,7 @@ namespace opam_lab1
             Services.Add(new Service(id, name, price, duration, quantity));
             Console.WriteLine($"Послуга '{name}' успішно додано!");
             PressAnyKey();
-            MainMenu();
+            return;
         }
 
         // Виводить таблицю всіх доступних послуг
