@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Globalization;
+using System.Text;
 
 namespace opam_lab1
 {
@@ -26,6 +27,8 @@ namespace opam_lab1
 
         public static void Main()
         {
+            Console.OutputEncoding = Encoding.UTF8;
+
             EnsureFileExists(currentDir + "/services.csv", "Id,Name,Price,Duration,Quantity");
             EnsureFileExists(currentDir + "/users.csv", "Id,Login,Password");
 
@@ -379,7 +382,7 @@ namespace opam_lab1
 
             Services.Add(new Service(id, name, price, duration, quantity));
             Console.WriteLine($"Послуга '{name}' успішно додано!");
-            Console.ReadKey();
+            PressAnyKey();
             MainMenu();
         }
 
@@ -430,8 +433,8 @@ namespace opam_lab1
             }
 
             Console.ResetColor();
-            Console.ReadKey();
-            MainMenu();
+            PressAnyKey();
+            return;
         }
 
         public static void DeleteService()
@@ -461,8 +464,8 @@ namespace opam_lab1
             }
 
             File.WriteAllLines(currentDir + "/services.csv", lines);
-            Console.ReadKey();
-            MainMenu();
+            PressAnyKey();
+            return;
         }
 
         public static void SortMenu()
@@ -640,3 +643,6 @@ namespace opam_lab1
         }
     }
 }
+
+//create by zewws92qar
+// Логойда Станіслав КН-23
